@@ -1,5 +1,5 @@
 #loubna Ait-Hra
-#projet : 
+#projet : Application de Gestion Intelligente du Stationnement Urbain
 
 Description du diagramme de classes – Système SmartParking
 Le diagramme présenté modélise l’architecture logicielle d’une application de gestion de parking intelligent, appelée SmartParking. Il met en évidence les principales entités du système, leurs responsabilités ainsi que les relations entre elles.
