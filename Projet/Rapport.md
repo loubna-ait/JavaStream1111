@@ -2,7 +2,9 @@
 #projet : Application de Gestion Intelligente du Stationnement Urbain
 
 Description du diagramme de classes – Système SmartParking
-<img src="loub.jpg" style="height:432px;margin-right:432px"/>
+
+<img src="UML_Diagramme_de_Classe.png" style="height:432px;margin-right:432px"/>
+
 Le diagramme présenté modélise l’architecture logicielle d’une application de gestion de parking intelligent, appelée SmartParking. Il met en évidence les principales entités du système, leurs responsabilités ainsi que les relations entre elles.
 1. Classe Utilisateur
 La classe Utilisateur représente toute personne utilisant l’application pour réserver une place de parking.
