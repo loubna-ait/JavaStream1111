@@ -1,7 +1,10 @@
 #loubna Ait-Hra
+
 #projet : Application de Gestion Intelligente du Stationnement Urbain
 
 Description du diagramme de classes – Système SmartParking
+
+#diagramme de classe
 
 <img src="UML_Diagramme_de_Classe.png" style="height:432px;margin-right:432px"/>
 
