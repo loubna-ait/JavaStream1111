@@ -6,7 +6,7 @@ Description du diagramme de classes – Système SmartParking
 
 #diagramme de classe
 
-<img src="UML_Diagramme_de_Classe.png" style="height:432px;margin-right:432px"/>
+<img src="Diagramme de classe.png" style="height:432px;margin-right:432px"/>
 
 Le diagramme présenté modélise l’architecture logicielle d’une application de gestion de parking intelligent, appelée SmartParking. Il met en évidence les principales entités du système, leurs responsabilités ainsi que les relations entre elles.
 1. Classe Utilisateur
