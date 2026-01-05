@@ -7,53 +7,83 @@ Description du diagramme de classes – Système SmartParking
 #diagramme de classe
 
 <img src="version finale diagramme de classe.png" style="height:432px;margin-right:432px"/>
+Explication du Diagramme de Classes - Smart Parking
+1. Vue Générale
+Le diagramme de classes représente l'architecture complète du système Smart Parking. Il est composé de 9 classes et 1 interface qui modélisent les entités métier et leurs interactions.
+Structure du système :
 
-Description des Tables- Système Smart Parking
-1. Introduction
-Le système Smart Parking est composé de 9 tables principales organisées selon un modèle relationnel. Ces tables représentent les entités métier du système et leurs interactions. Cette section présente le rôle de chaque table et les relations qui les lient.
+Gestion des utilisateurs : Utilisateur, Conducteur, Administrateur
+Gestion du parking : Parking, PlaceStationnement, CapteurIoT, TarifDynamique
+Gestion des transactions : Reservation, Paiement
+Abstraction : Interface IReservable
 
-2. Description des Tables
-2.1 Table UTILISATEUR
-Rôle: Table principale qui stocke les informations de base de tous les utilisateurs du système.
-Fonction: Sert de table parent pour les différents types d'utilisateurs (conducteurs et administrateurs). Elle centralise les données communes comme l'authentification et les informations personnelles.
-Utilité dans le système: Point d'entrée pour la connexion et la gestion des profils utilisateurs.
 
-2.2 Table CONDUCTEUR
-Rôle: Représente les utilisateurs finaux qui utilisent l'application pour trouver et réserver des places de stationnement.
-Fonction: Hérite de la table Utilisateur et ajoute des informations spécifiques aux conducteurs comme les coordonnées de contact et les informations du véhicule.
-Utilité dans le système: Table centrale pour la gestion des réservations et l'historique des utilisateurs mobiles.
+2. Description des Classes
+Interface IReservable
+Définit le contrat pour tout élément réservable du système avec trois méthodes essentielles : vérifier la disponibilité, réserver et libérer. Cette interface est implémentée par PlaceStationnement, garantissant ainsi que toute place possède les fonctionnalités nécessaires pour être réservée.
+Utilisateur (classe parent)
+Classe de base contenant les informations communes à tous les utilisateurs (id, nom, email, mot de passe, rôle). Elle permet l'authentification et la gestion de profil.
+Conducteur
+Hérite de Utilisateur et représente l'utilisateur final de l'application mobile. Il possède des informations supplémentaires (téléphone, véhicule) et peut rechercher des parkings disponibles et réserver des places.
+Administrateur
+Hérite également de Utilisateur mais dispose de privilèges de gestion : création/modification des parkings et consultation des statistiques du système.
+Parking
+Représente un parking physique avec sa localisation GPS (latitude, longitude), sa capacité totale, le nombre de places disponibles en temps réel et le tarif horaire de base. Il contient plusieurs places de stationnement et peut avoir plusieurs grilles tarifaires.
+PlaceStationnement
+Élément central du système représentant une place individuelle. Chaque place possède un numéro, un type (normale, handicapé, électrique, moto), un statut (libre, occupée, réservée, maintenance) et est liée à un capteur IoT. Cette classe implémente l'interface IReservable.
+CapteurIoT
+Représente le capteur physique installé sur chaque place pour la détection automatique en temps réel. Il détecte l'occupation de la place et envoie les données au serveur via protocole MQTT. Supporte plusieurs technologies : ultrason, magnétique, infrarouge, caméra IA.
+Reservation
+Gère le cycle de vie d'une réservation avec un code unique (QR code), des dates de début/fin, un statut (en attente, confirmée, active, terminée, annulée) et un montant calculé. Chaque réservation est liée à un conducteur, une place et génère un paiement.
+Paiement
+Gère les transactions financières avec le montant, la date, la méthode de paiement (carte bancaire, PayPal, etc.) et le statut de la transaction. Chaque paiement est lié à une seule réservation.
+TarifDynamique
+Permet la tarification variable selon les plages horaires en appliquant un coefficient multiplicateur au tarif de base du parking. Par exemple : coefficient 1.5 en heures de pointe, 0.5 la nuit.
 
-2.3 Table ADMINISTRATEUR
-Rôle: Représente les utilisateurs ayant des privilèges d'administration du système.
-Fonction: Hérite de la table Utilisateur et permet d'identifier les comptes avec droits de gestion avancés (création de parkings, configuration des tarifs, consultation des statistiques).
-Utilité dans le système: Contrôle d'accès aux fonctionnalités d'administration via le dashboard web.
+3. Relations Principales
+Héritage
+Utilisateur est la classe parent dont héritent Conducteur et Administrateur, permettant de factoriser les attributs communs.
+Implémentation
+PlaceStationnement implémente l'interface IReservable, s'engageant à fournir les méthodes de vérification, réservation et libération.
+Associations
 
-2.4 Table PARKING
-Rôle: Stocke les informations relatives à chaque parking physique géré par le système.
-Fonction: Contient les données de localisation (GPS), la capacité totale, le nombre de places disponibles en temps réel et les informations tarifaires de base. C'est le conteneur principal des places de stationnement.
-Utilité dans le système: Permet la recherche géographique des parkings disponibles et le calcul de la disponibilité globale.
+Conducteur ↔ Reservation (1:N) : Un conducteur peut avoir plusieurs réservations
+Parking ↔ PlaceStationnement (1:N) : Un parking contient plusieurs places
+PlaceStationnement ↔ CapteurIoT (1:1) : Chaque place a un capteur unique
+PlaceStationnement ↔ Reservation (1:N) : Une place peut avoir plusieurs réservations dans l'historique
+Reservation ↔ Paiement (1:1) : Chaque réservation génère un paiement unique
+Parking ↔ TarifDynamique (1:N) : Un parking peut avoir plusieurs grilles tarifaires
 
-2.5 Table PLACE_STATIONNEMENT
-Rôle: Représente chaque place de stationnement individuelle dans un parking.
-Fonction: Gère l'état en temps réel de chaque place (libre, occupée, réservée, en maintenance). Chaque place est identifiée par un numéro unique et possède un type spécifique (normale, handicapé, électrique, moto).
-Utilité dans le système: Élément central du système IoT, elle est directement liée aux capteurs pour la détection en temps réel et aux réservations des conducteurs.
 
-2.6 Table CAPTEUR_IOT
-Rôle: Représente les capteurs physiques installés sur les places de stationnement.
-Fonction: Stocke les informations techniques des capteurs (type de technologie, état de fonctionnement, dernier signal reçu). Chaque capteur détecte la présence ou l'absence d'un véhicule et communique avec le backend via protocole MQTT.
-Utilité dans le système: Cœur de la dimension IoT du projet, permet la mise à jour automatique et en temps réel de la disponibilité des places sans intervention humaine.
+4. Scénario d'Utilisation
 
-2.7 Table RESERVATION
-Rôle: Enregistre toutes les réservations effectuées par les conducteurs.
-Fonction: Gère le cycle de vie complet d'une réservation depuis sa création jusqu'à sa clôture. Stocke les dates de début et fin, le code unique de réservation (QR code), le statut et le montant calculé.
-Utilité dans le système: Permet la réservation anticipée des places, génère les revenus et maintient l'historique des transactions.
+Un Conducteur recherche des Parkings disponibles
+Il sélectionne une PlaceStationnement libre
+Le système vérifie la disponibilité via IReservable.verifierDisponibilite()
+Une Reservation est créée avec calcul du montant selon le TarifDynamique
+Un Paiement est traité
+Si le paiement est validé, la réservation est confirmée et la place réservée
+À l'arrivée du véhicule, le CapteurIoT détecte l'occupation
+La place passe au statut "occupée" et la réservation devient "active"
+Au départ, le capteur détecte la libération
+La place redevient "libre" et la réservation est "terminée"
 
-2.8 Table PAIEMENT
-Rôle: Gère les transactions financières liées aux réservations.
-Fonction: Enregistre les informations de paiement (montant, méthode, statut de la transaction). Communique avec les gateways de paiement externes (Stripe, PayPal) pour le traitement sécurisé des transactions.
-Utilité dans le système: Assure la monétisation du service et la validation des réservations. Génère les reçus et factures électroniques.
 
-2.9 Table TARIF_DYNAMIQUE
-Rôle: Définit les grilles tarifaires variables selon les plages horaires.
-Fonction: Permet l'application de tarifs différenciés en fonction de l'heure de la journée, du jour de la semaine ou du taux d'occupation. Utilise un système de coefficients multiplicateurs appliqués au tarif de base.
-Utilité dans le système: Optimise les revenus et régule l'affluence en appliquant des tarifs plus élevés aux heures de pointe et réduits aux heures creuses.
+5. Avantages de l'Architecture
+
+Modularité : Chaque classe a une responsabilité unique et bien définie
+Extensibilité : Facile d'ajouter de nouveaux types d'utilisateurs ou d'éléments réservables
+Maintenabilité : Code organisé avec des relations claires
+Intégration IoT : Architecture prête pour des milliers de capteurs
+Principes OOP : Respecte l'encapsulation, l'héritage, le polymorphisme et l'abstraction
+
+
+6. Implémentation Technique
+Ce diagramme se traduit directement en :
+
+Classes Java avec Spring Boot
+Tables SQL dans MySQL (une classe = une table)
+API REST pour les interactions
+Communication MQTT pour les capteurs IoT
+
+L'interface IReservable permet le polymorphisme et facilite les tests unitaires, tandis que l'héritage évite la duplication de code et respecte le principe DRY (Don't Repeat Yourself).
