@@ -6,7 +6,7 @@ Description du diagramme de classes – Système SmartParking
 
 #diagramme de classe
 
-<img src="Diagramme de classe.png" style="height:432px;margin-right:432px"/>
+<img src="version finale diagramme de classe.png" style="height:432px;margin-right:432px"/>
 
 Description des Tables- Système Smart Parking
 1. Introduction
